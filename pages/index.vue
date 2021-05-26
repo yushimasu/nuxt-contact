@@ -3,30 +3,118 @@
     <div>
       <Logo />
       <h1 class="title">nuxt-contact</h1>
-      <form name="contact" method="POST" data-netlify="true">
-        <input type="hidden" name="form-name" value="contact">
-        <p>
-          <label>お名前<input type="text" name="name" /></label>
-        </p>
-        <p>
-          <label>メールアドレス<input type="email" name="email" /></label>
-        </p>
-        <p>
-          <label
-            >体調
-            <select name="role[]" multiple>
-              <option value="元気">元気</option>
-              <option value="よくない">よくない</option>
-            </select></label
-          >
-        </p>
-        <p>
-          <label>備考<textarea name="message"></textarea></label>
-        </p>
-        <p>
-          <button type="submit">送信</button>
-        </p>
-      </form>
+      <div class="p-contact">
+        <validation-observer
+          ref="observer"
+          v-slot="{ invalid, validated }"
+          tag="form"
+          class="p-contact__form"
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          data-netlify-honeypot="bot-field"
+          @submit.prevent="onSubmit"
+          :class="sendingClass"
+        >
+          <input type="hidden" name="form-name" value="contact" />
+
+          <div class="p-contact__item">
+            <label for="username">お名前</label>
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required|max:100"
+              name="お名前"
+              mode="lazy"
+            >
+              <input
+                type="text"
+                id="username"
+                name="username"
+                v-model="username"
+                autocomplete="name"
+              />
+              <p v-show="errors.length" class="p-contact__error">
+                {{ errors[0] }}
+              </p>
+            </validation-provider>
+          </div>
+          <!-- /.p-contact__item -->
+
+          <div class="p-contact__item">
+            <label for="katakana">フリガナ</label>
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required|katakana"
+              name="フリガナ"
+            >
+              <input
+                type="text"
+                id="katakana"
+                name="katakana"
+                v-model="katakana"
+              />
+              <p v-show="errors.length" class="p-contact__error">
+                {{ errors[0] }}
+              </p>
+            </validation-provider>
+          </div>
+          <!-- /.p-contact__item -->
+
+          <div class="p-contact__item">
+            <label for="useremail">メールアドレス</label>
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required|email|max:256"
+              name="メールアドレス"
+            >
+              <input
+                type="text"
+                id="useremail"
+                name="useremail"
+                v-model="useremail"
+                autocomplete="email"
+              />
+              <p v-show="errors.length" class="p-contact__error">
+                {{ errors[0] }}
+              </p>
+            </validation-provider>
+          </div>
+          <!-- /.p-contact__item -->
+
+          <div class="p-contact__item">
+            <label for="message">お問い合わせ内容</label>
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required|max:1000"
+              name="お問い合わせ内容"
+            >
+              <textarea
+                id="message"
+                name="message"
+                v-model="message"
+              ></textarea>
+              <p v-show="errors.length" class="p-contact__error">
+                {{ errors[0] }}
+              </p>
+            </validation-provider>
+          </div>
+          <!-- /.p-contact__item -->
+
+          <div class="p-contact__item" v-show="false">
+            <label for="message">スパムでない場合は空欄</label>
+            <input type="text" name="bot-field" v-model="botField" />
+          </div>
+          <!-- /.p-contact__item -->
+
+          <div class="p-contact__submit">
+            <button type="submit" :disabled="invalid || !validated">
+              送信
+            </button>
+          </div>
+          <!-- /.p-contact__submit -->
+        </validation-observer>
+        <!-- /.p-contact__form -->
+      </div>
     </div>
   </div>
 </template>
@@ -65,5 +153,8 @@ export default {};
 
 .links {
   padding-top: 15px;
+}
+.p-contact__error{
+  color: #ff0111;
 }
 </style>

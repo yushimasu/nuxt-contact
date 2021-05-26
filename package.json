@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "core-js": "^3.9.1",
-    "nuxt": "^2.15.3"
+    "nuxt": "^2.2.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "vee-validate": "^3.4.6"
+  }
 }
